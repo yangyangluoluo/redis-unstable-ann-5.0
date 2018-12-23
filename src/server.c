@@ -2005,7 +2005,7 @@ void resetServerStats(void) {
     server.stat_net_output_bytes = 0;
     server.aof_delayed_fsync = 0;
 }
-
+/* 初始化redis server */
 void initServer(void) {
     int j;
 
@@ -2044,6 +2044,7 @@ void initServer(void) {
             strerror(errno));
         exit(1);
     }
+    /* 为redisDb分配空间 */
     server.db = zmalloc(sizeof(redisDb)*server.dbnum);
 
     /* Open the TCP listening socket for the user commands. */
@@ -2070,6 +2071,7 @@ void initServer(void) {
     }
 
     /* Create the Redis databases, and initialize other internal state. */
+    /* 初始化redisDb */
     for (j = 0; j < server.dbnum; j++) {
         server.db[j].dict = dictCreate(&dbDictType,NULL);
         server.db[j].expires = dictCreate(&keyptrDictType,NULL);
