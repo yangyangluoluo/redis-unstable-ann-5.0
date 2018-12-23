@@ -600,13 +600,19 @@ typedef struct RedisModuleDigest {
 #define LRU_CLOCK_RESOLUTION 1000 /* LRU clock resolution in ms */
 
 #define OBJ_SHARED_REFCOUNT INT_MAX
+/* redis的对象 */
 typedef struct redisObject {
+    /* 类型7中类型 */
     unsigned type:4;
+    /* 编码方式 */
     unsigned encoding:4;
+    /*当内存紧张，淘汰数据的时候用到 */
     unsigned lru:LRU_BITS; /* LRU time (relative to global lru_clock) or
                             * LFU data (least significant 8 bits frequency
                             * and most significant 16 bits access time). */
+    /* 引用计数 */
     int refcount;
+    /* 数据指针 */
     void *ptr;
 } robj;
 
@@ -633,6 +639,7 @@ typedef struct clientReplyBlock {
 /* Redis database representation. There are multiple databases identified
  * by integers from 0 (the default database) up to the max configured
  * database. The database number is the 'id' field in the structure. */
+/* redis的数据库，一个redis有多个数据库从0到设置的个数，id代表是哪一个数据库的编号 */
 typedef struct redisDb {
     /* 保存着数据库中的所有键值对数据,用数组和链表来实现 */
     dict *dict;                 /* The keyspace for this DB */
