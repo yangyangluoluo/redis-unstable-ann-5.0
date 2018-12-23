@@ -40,6 +40,7 @@ struct _rio {
     /* Backend functions.
      * Since this functions do not tolerate short writes or reads the return
      * value is simplified to: zero on error, non zero on complete success. */
+    // API,读取、写入以及获取偏移量的函数
     size_t (*read)(struct _rio *, void *buf, size_t len);
     size_t (*write)(struct _rio *, const void *buf, size_t len);
     off_t (*tell)(struct _rio *);
@@ -49,31 +50,43 @@ struct _rio {
      * designed so that can be called with the current checksum, and the buf
      * and len fields pointing to the new block of data to add to the checksum
      * computation. */
+    // 校验和计算函数，每次有写入/读取新数据时都要计算一次
     void (*update_cksum)(struct _rio *, const void *buf, size_t len);
 
     /* The current checksum */
+    /* 当前校验和 */
     uint64_t cksum;
 
     /* number of bytes read or written */
+    /* 读入或者写入rio的字节数 */
     size_t processed_bytes;
 
     /* maximum single read or write chunk size */
+    /* 每次最大读取和 写入的字节数*/
     size_t max_processing_chunk;
 
     /* Backend-specific vars. */
     union {
         /* In-memory buffer target. */
+        /* 内存缓冲. */
         struct {
+            /* 缓存指针 */
             sds ptr;
+            /* 偏移量 */
             off_t pos;
         } buffer;
         /* Stdio file pointer target. */
+        /* 文件缓冲. */
         struct {
+            /* 文件 */
             FILE *fp;
+            /*  最近一次 fsync() 以来，写入的字节量 */
             off_t buffered; /* Bytes written since last fsync. */
+            /* 写入多少字节之后，才会自动执行一次 fsync() */
             off_t autosync; /* fsync after 'autosync' bytes written. */
         } file;
         /* Multiple FDs target (used to write to N sockets). */
+        /* sockets 缓冲 */
         struct {
             int *fds;       /* File descriptors. */
             int *state;     /* Error state of each fd. 0 (if ok) or errno. */

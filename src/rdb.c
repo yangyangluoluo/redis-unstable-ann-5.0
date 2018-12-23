@@ -1237,7 +1237,7 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
             strerror(errno));
         return C_ERR;
     }
-
+    // 初始化 rdb 结构体。rdb 结构体内指定了读写文件的函数，已写/读字符统计等数据
     rioInitWithFile(&rdb,fp);
 
     if (server.rdb_save_incremental_fsync)
