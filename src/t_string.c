@@ -168,7 +168,7 @@ int getGenericCommand(client *c) {
         return C_OK;
     }
 }
-
+/* 获取数据的command */
 void getCommand(client *c) {
     getGenericCommand(c);
 }
